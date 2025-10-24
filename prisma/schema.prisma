@@ -1,0 +1,53 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+  schemas  = ["mensagens", "alunos", "midia"] // Schemas para organização
+}
+
+// ------------------------------------
+// 1. Schema Alunos (Entidade Principal)
+// ------------------------------------
+model Aluno {
+  id        Int       @id @default(autoincrement())
+  nome      String
+  email     String    @unique
+
+  @@schema("alunos")
+}
+
+// ------------------------------------
+// 2. Schema Mensagens
+// ------------------------------------
+model Mensagem {
+  id        Int      @id @default(autoincrement())
+  texto     String
+  dataEnvio DateTime @default(now())
+  alunoId   Int      @unique // <-- Chave Estrangeira Única
+  aluno     Aluno    @relation(fields: [alunoId], references: [id]) // O remetente
+
+  @@schema("mensagens")
+}
+
+// ------------------------------------
+// 3. Schema Fotos (ou Mídia)
+// ------------------------------------
+model Foto {
+  id        Int     @id @default(autoincrement())
+  url       String  // O link para o arquivo da foto
+  descricao String?
+  alunoId   Int     @unique // <-- Chave Estrangeira Única
+  aluno     Aluno   @relation(fields: [alunoId], references: [id])
+
+  @@schema("midia")
+}
