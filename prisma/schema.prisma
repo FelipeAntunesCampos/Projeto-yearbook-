@@ -1,19 +1,18 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
-// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
-// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
-
+// Este bloco define como gerar o código do Prisma Client.
 generator client {
-  provider = "prisma-client"
-  output   = "../src/generated/prisma"
+  provider = "prisma-client-js"
 }
 
+// Este bloco define a fonte de dados (seu banco de dados).
+// Foi removido qualquer 'schemas = [...]' daqui.
 datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
-  schemas  = ["mensagens", "alunos", "midia"] // Schemas para organização
 }
+
+// ----------------------------------------------------
+// Modelos (Tabelas)
+// ----------------------------------------------------
 
 // Tabela: Aluno
 model Aluno {
@@ -22,6 +21,9 @@ model Aluno {
   email     String @unique
   matricula String @unique
 
+  // Campo sugerido para o texto do anuário
+  biografia String? @db.Text
+
   // Relacionamentos 1 para Muitos
   mensagens Mensagem[]
   fotos     Foto[]
@@ -29,32 +31,40 @@ model Aluno {
   criadoEm     DateTime @default(now())
   atualizadoEm DateTime @updatedAt
 
-  @@map("alunos") // Mapeia o modelo 'Aluno' para a tabela 'alunos' no banco
+  @@map("alunos")
 }
 
-// Tabela: Mensagem (Lado "MUITOS" do 1:M)
+// Tabela: Mensagem (Recados no Anuário)
 model Mensagem {
   id       Int    @id @default(autoincrement())
-  conteudo String @db.VarChar(255)
+  conteudo String @db.VarChar(500)
 
-  // Chave estrangeira (sem @unique para 1:M)
+  // Campo sugerido: Identifica quem escreveu o recado
+  remetente String?
+
+  // Chave estrangeira para o aluno que recebe o recado
   alunoId Int
   aluno   Aluno @relation(fields: [alunoId], references: [id])
 
   criadoEm DateTime @default(now())
 
-  @@map("mensagens") // Mapeia o modelo 'Mensagem' para a tabela 'mensagens' no banco
+  @@map("mensagens")
 }
 
-// Tabela: Foto (Lado "MUITOS" do 1:M)
+// Tabela: Foto (Mídia do Aluno)
 model Foto {
-  id        Int      @id @default(autoincrement())
-  url       String   @db.Text // URL da foto
-  descricao String? // Opcional
-  // Chave estrangeira (sem @unique para 1:M)
-  alunoId   Int
-  aluno     Aluno    @relation(fields: [alunoId], references: [id])
-  criadoEm  DateTime @default(now())
+  id        Int     @id @default(autoincrement())
+  url       String  @db.Text
+  descricao String?
 
-  @@map("fotos") // Mapeia o modelo 'Foto' para a tabela 'fotos' no banco
+  // Campo sugerido: Se a foto é a principal do perfil
+  isPerfil Boolean @default(false)
+
+  // Chave estrangeira
+  alunoId Int
+  aluno   Aluno @relation(fields: [alunoId], references: [id])
+
+  criadoEm DateTime @default(now())
+
+  @@map("fotos")
 }
