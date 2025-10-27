@@ -15,39 +15,46 @@ datasource db {
   schemas  = ["mensagens", "alunos", "midia"] // Schemas para organização
 }
 
-// ------------------------------------
-// 1. Schema Alunos (Entidade Principal)
-// ------------------------------------
+// Tabela: Aluno
 model Aluno {
-  id        Int       @id @default(autoincrement())
+  id        Int    @id @default(autoincrement())
   nome      String
-  email     String    @unique
+  email     String @unique
+  matricula String @unique
 
-  @@schema("alunos")
+  // Relacionamentos 1 para Muitos
+  mensagens Mensagem[]
+  fotos     Foto[]
+
+  criadoEm     DateTime @default(now())
+  atualizadoEm DateTime @updatedAt
+
+  @@map("alunos") // Mapeia o modelo 'Aluno' para a tabela 'alunos' no banco
 }
 
-// ------------------------------------
-// 2. Schema Mensagens
-// ------------------------------------
+// Tabela: Mensagem (Lado "MUITOS" do 1:M)
 model Mensagem {
-  id        Int      @id @default(autoincrement())
-  texto     String
-  dataEnvio DateTime @default(now())
-  alunoId   Int      @unique // <-- Chave Estrangeira Única
-  aluno     Aluno    @relation(fields: [alunoId], references: [id]) // O remetente
+  id       Int    @id @default(autoincrement())
+  conteudo String @db.VarChar(255)
 
-  @@schema("mensagens")
+  // Chave estrangeira (sem @unique para 1:M)
+  alunoId Int
+  aluno   Aluno @relation(fields: [alunoId], references: [id])
+
+  criadoEm DateTime @default(now())
+
+  @@map("mensagens") // Mapeia o modelo 'Mensagem' para a tabela 'mensagens' no banco
 }
 
-// ------------------------------------
-// 3. Schema Fotos (ou Mídia)
-// ------------------------------------
+// Tabela: Foto (Lado "MUITOS" do 1:M)
 model Foto {
-  id        Int     @id @default(autoincrement())
-  url       String  // O link para o arquivo da foto
-  descricao String?
-  alunoId   Int     @unique // <-- Chave Estrangeira Única
-  aluno     Aluno   @relation(fields: [alunoId], references: [id])
+  id        Int      @id @default(autoincrement())
+  url       String   @db.Text // URL da foto
+  descricao String? // Opcional
+  // Chave estrangeira (sem @unique para 1:M)
+  alunoId   Int
+  aluno     Aluno    @relation(fields: [alunoId], references: [id])
+  criadoEm  DateTime @default(now())
 
-  @@schema("midia")
+  @@map("fotos") // Mapeia o modelo 'Foto' para a tabela 'fotos' no banco
 }
