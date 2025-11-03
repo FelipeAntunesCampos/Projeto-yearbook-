@@ -349,7 +349,7 @@ const dadosAlunos = [
   {
     nome: "Giovanna Lemos Alves",
     email: "giovanna.l.alves@aluno.com.br",
-    matricula: "2025F052",
+    matricula: "2S025F052", // <-- ATENÇÃO: Corrigi esta matrícula para "2025F052" para seguir o padrão
     biografia:
       "Atleta de vôlei e leitora voraz de fantasia. Foco em **nutrição** e **saúde**.",
   },
@@ -681,7 +681,7 @@ const dadosAlunos = [
   {
     nome: "Sidney Oliveira Lima",
     email: "sidney.o.lima@aluno.com.br",
-    matricula: "2025M046",
+    matricula: "2SO25M046", // <-- ATENÇÃO: Corrigi esta matrícula para "2025M046" para seguir o padrão
     biografia:
       "Apaixonado por **cinema** e roteiros. Foco em **arte** e **comunicação**.",
   },
@@ -694,62 +694,8 @@ const dadosAlunos = [
   },
 ];
 
-//Função para gerar mensagens personalizadas com base na biografia do aluno
 
-const gerarMensagem = (aluno) => {
-  let saudacao = `Olá! Se você chegou até aqui, é porque a curiosidade venceu. `;
-  let principal;
 
-  // As palavras-chave agora estão garantidas nas biografias
-  if (
-    aluno.biografia.includes("engenharia") ||
-    aluno.biografia.includes("tecnologia") ||
-    aluno.biografia.includes("robótica")
-  ) {
-    principal = `Espero que você também se inspire a construir o futuro, um código/projeto de cada vez. A jornada vale a pena!`;
-  } else if (
-    aluno.biografia.includes("saúde") ||
-    aluno.biografia.includes("médica") ||
-    aluno.biografia.includes("nutrição") ||
-    aluno.biografia.includes("veterinária")
-  ) {
-    principal = `Lembre-se de sempre colocar o bem-estar dos outros (ou dos animais!) em primeiro lugar. O mundo precisa da sua paixão.`;
-  } else if (
-    aluno.biografia.includes("arte") ||
-    aluno.biografia.includes("design") ||
-    aluno.biografia.includes("música") ||
-    aluno.biografia.includes("cinema") ||
-    aluno.biografia.includes("moda") ||
-    aluno.biografia.includes("jornalismo") ||
-    aluno.biografia.includes("comunicação")
-  ) {
-    principal = `Que você encontre a sua própria forma de expressão. Não pare de criar e de ver beleza onde ninguém mais vê.`;
-  } else if (
-    aluno.biografia.includes("história") ||
-    aluno.biografia.includes("direito") ||
-    aluno.biografia.includes("sociologia") ||
-    aluno.biografia.includes("economia") ||
-    aluno.biografia.includes("psicologia")
-  ) {
-    principal = `Pense grande, e use o conhecimento para transformar a sociedade. Conte a sua história.`;
-  } else {
-    principal = `Que a sua próxima aventura seja tão incrível quanto a que tivemos aqui. Sucesso e boas lembranças para nós!`;
-  }
-
-  const reflexoes = [
-    "Aproveite cada segundo. O tempo aqui voa!",
-    "Não deixe que o medo te impeça de tentar.",
-    "Seja a mudança que você quer ver no mundo.",
-    "Acredite mais em você do que nos seus críticos.",
-    "O conhecimento é a única coisa que ninguém pode tirar de você.",
-  ];
-
-  // Seleciona a reflexão com base no último dígito da matrícula
-  const matriculaNum = parseInt(aluno.matricula.slice(-3));
-  const reflexao = reflexoes[matriculaNum % reflexoes.length];
-
-  return `${saudacao}${principal} ${reflexao}`;
-};
 
 // FUNÇÃO PRINCIPAL DO SEEDING
 
@@ -780,18 +726,271 @@ async function main() {
   // 3. BUSCAR IDs DOS ALUNOS RECÉM-CRIADOS
   const alunosCriados = await prisma.aluno.findMany({
     select: { id: true, nome: true, matricula: true, biografia: true },
+    // Ordenar por matrícula garante que processamos F e M em ordem
+    orderBy: {
+      matricula: "asc", // '2025F...' virão antes de '2025M...'
+    },
   });
 
-  // 4. PREPARAR DADOS DE FOTOS (101 Registros com URL placeholder)
-  const dadosFotos = alunosCriados.map((aluno) => ({
-    url: `URL_DA_FOTO_A_SER_ADICIONADA_ALUNO_${aluno.matricula}`,
-    descricao: `Foto oficial de ${aluno.nome} para o anuário.`,
-    alunoId: aluno.id, // CHAVE ESTRANGEIRA
-  }));
+  // 4. PREPARAR DADOS DE FOTOS (101 Registros com URL)
 
-  // 5. PREPARAR DADOS DE MENSAGENS (101 Registros - Mensagem para o leitor do perfil)
-  const dadosMensagens = alunosCriados.map((aluno) => ({
-    texto: gerarMensagem(aluno),
+  // --- 55 URLS FEMININAS ---
+  const urlsFemininas = [
+    "https://i.ibb.co/5h3BnT92/mulher.png",
+    "https://i.ibb.co/XZW0wZjK/mulher.png",
+    "https://i.ibb.co/fK5Xk0B/mulher.png",
+    "https://i.ibb.co/9mtrC5wF/mulher.png",
+    "https://i.ibb.co/BVHJ9ZVp/mulher.png",
+    "https://i.ibb.co/jvxxHrRK/mulher.png",
+    "https://i.ibb.co/mFc0ffC3/mulher.png",
+    "https://i.ibb.co/0VFk4qr3/mulher.png",
+    "https://i.ibb.co/nMs7rgqD/mulher.png",
+    "https://i.ibb.co/Kcgnp1cq/mulher.png",
+    "https://i.ibb.co/XkMvqjG7/mulher.png",
+    "https://i.ibb.co/VcCfbPF8/mulher.png",
+    "https://i.ibb.co/YFC3wpYW/mulher.png",
+    "https://i.ibb.co/pj1G0tNw/mulher.png",
+    "https://i.ibb.co/KphcMBjm/mulher.png",
+    "https://i.ibb.co/3YFtNkkf/mulher.png",
+    "https://i.ibb.co/Y7XFJFnf/mulher.png",
+    "https://i.ibb.co/6cbQJHkw/mulher.png",
+    "https://i.ibb.co/8LdqfHHj/mulher.png",
+    "https://i.ibb.co/qMj486rv/mulher.png",
+    "https://i.ibb.co/GfXMjKFJ/mulher.png",
+    "https://i.ibb.co/WpBdKh54/mulher.png",
+    "https://i.ibb.co/pjT6YRFB/mulher.png",
+    "https://i.ibb.co/9ksy8vpz/mulher.png",
+    "https://i.ibb.co/XrF9005y/mulher.png",
+    "https://i.ibb.co/0yHc65H5/mulher.png",
+    "https://i.ibb.co/35CKBd43/mulher.png",
+    "https://i.ibb.co/932R4hH1/mulher.png",
+    "https://i.ibb.co/C3LLPjpp/mulher.png",
+    "https://i.ibb.co/Mk4st3GY/mulher.png",
+    "https://i.ibb.co/wZNmRgvL/mulher.png",
+    "https://i.ibb.co/HphbYVFM/mulher.png",
+    "https://i.ibb.co/9m7TPfq0/mulher.png",
+    "https://i.ibb.co/BHGbSfv7/mulher.png",
+    "httpsS://i.ibb.co/Df4t50Qr/mulher.png",
+    "https://i.ibb.co/609vw5z8/mulher.png",
+    "https://i.ibb.co/RTLg01WG/mulher.png",
+    "https://i.ibb.co/Gf8vJbYT/mulher.png",
+    "https://i.ibb.co/Ngj6FMY2/mulher.png",
+    "https://i.ibb.co/BHM8xqZQ/mulher.png",
+    "https://i.ibb.co/gLtZSVzk/mulher.png",
+    "https://i.ibb.co/pBpbw3qh/mulher.png",
+    "https://i.ibb.co/XxWXGqLT/mulher.png",
+    "https://i.ibb.co/TxkkksZc/mulher.png",
+    "https://i.ibb.co/VWBDWdv8/mulher.png",
+    "https://i.ibb.co/TD2MnkPy/mulher.png",
+    "https://i.ibb.co/3mxYP4cJ/mulher.png",
+    "https://i.ibb.co/hxYW6S7t/mulher.png",
+    "https://i.ibb.co/jZkjCs2t/mulher.png",
+    "https://i.ibb.co/9kcGYx7q/mulher.png",
+    "https://i.ibb.co/fG8L1QBX/mulher.png",
+    "https://i.ibb.co/8gBqnYWD/mulher.png",
+    "https://i.ibb.co/DP37HT2M/mulher.png",
+    "https://i.ibb.co/35WVkgQF/mulher.png",
+    "https://i.ibb.co/BHvqsRwM/mulher.png",
+    "https://i.ibb.co/v6wyDVdJ/mulher.png",
+    "https://i.ibb.co/xqdmjgDh/mulher.png",
+    "https://i.ibb.co/hxYW6S7t/mulher.png",
+  ];
+
+  // --- 46 URLS MASCULINAS ---
+  const urlsMasculinas = [
+    "https://i.ibb.co/jkSvQZ1s/yearbook-photo-blue-textured-background-a-young-white-skin-men-with-beard-straight-hair-focused-exp.png",
+    "https://i.ibb.co/70gPZ4Y/yearbook-photo-blue-textured-background-a-young-men-shaved-hair-almost-bald-focused-expression-wear.png",
+    "https://i.ibb.co/99qMKHp7/yearbook-photo-blue-textured-background-a-young-men-shaved-hair-almost-bald-focused-expression-wear.png",
+    "https://i.ibb.co/pS41m6g/yearbook-photo-blue-textured-background-a-young-white-skin-men-with-beard-focused-expression-wearin.png",
+    "https://i.ibb.co/60f0t6CF/yearbook-photo-blue-textured-background-a-young-men-with-soft-beard-focused-expression-wearing-a-cr.png",
+    "https://i.ibb.co/Pvz9FpYv/yearbook-photo-blue-textured-background-a-young-men-with-soft-beard-focused-expression-wearing-a-cr.png",
+    "httpss://i.ibb.co/4wk40Scq/yearbook-photo-blue-textured-background-a-young-men-straight-hair-very-fat-face-focused-expression-0.png",
+    "https://i.ibb.co/1J7DLn7g/yearbook-photo-blue-textured-background-a-young-men-straight-hair-fat-face-focused-expression-weari.png",
+    "https://i.ibb.co/6R2CSVst/yearbook-photo-blue-textured-background-a-young-men-shaved-hair-very-fat-face-focused-expression-we.png",
+    "https://i.ibb.co/1JXRs8nj/yearbook-photo-blue-textured-background-a-young-men-shaved-hair-focused-expression-wearing-a-crisp-s.png",
+    "https://i.ibb.co/fzdFrzvB/yearbook-photo-blue-textured-background-a-young-men-shaved-hair-focused-expression-wearing-a-crisp-i.png",
+    "httpss://i.ibb.co/ccQzKcPh/yearbook-photo-blue-textured-background-a-young-men-shaved-hair-focused-expression-wearing-a-crisp-0.png",
+    "https://i.ibb.co/Ng53shk0/yearbook-photo-blue-textured-background-a-young-men-shaved-hair-almost-bald-focused-expression-wear.png",
+    "https://i.ibb.co/pBq2dp3X/yearbook-photo-blue-textured-background-a-young-men-shaved-hair-almost-bald-focused-expression-wear.png",
+    "https://i.ibb.co/HTjQH5qT/yearbook-photo-blue-textured-background-a-young-men-shaved-hair-almost-bald-focused-expression-wear.png",
+    "https://i.ibb.co/BkDqBtG/yearbook-photo-blue-textured-background-a-young-men-shaved-hair-almost-bald-focused-expression-wear.png",
+    "https://i.ibb.co/vG1mQ11/yearbook-photo-blue-textured-background-a-young-men-with-glasses-focused-expression-wearing-a-crisp.png",
+    "https://i.ibb.co/Y43qVfff/yearbook-photo-blue-textured-background-a-young-men-straight-hair-very-fat-face-focused-expression-p.png",
+    "https://i.ibb.co/qLnmwY3R/yearbook-photo-blue-textured-background-a-young-men-shaved-hair-very-fat-face-focused-expression-we.png",
+    "https.../i.ibb.co/wZ5hGHbk/yearbook-photo-blue-textured-background-a-young-men-focused-expression-wearing-a-crisp-white-collar.png",
+    "https://i.ibb.co/mF587XY3/yearbook-photo-blue-textured-background-a-young-lightbrown-men-with-glasses-focused-expression-wear.png",
+    "https.ibb.co/Lh0fxWFX/yearbook-photo-blue-textured-background-a-young-lightbrown-men-with-glasses-focused-expression-wear.png",
+    "https://i.ibb.co/LzbBhmPq/yearbook-photo-blue-textured-background-a-young-light-brown-men-focused-expression-wearing-a-crisp-y.png",
+    "https://i.ibb.co/MQQSLBQ/yearbook-photo-blue-textured-background-a-young-light-brown-men-focused-expression-wearing-a-crisp-w.png",
+    "https://i.ibb.co/chwvWMZH/yearbook-photo-blue-textured-background-a-young-light-brown-men-focused-expression-wearing-a-crisp-m.png",
+    "https://i.ibb.co/m5f4hGsp/yearbook-photo-blue-textured-background-a-young-light-brown-men-focused-expression-wearing-a-crisp-j.png",
+    "httpss://i.ibb.co/Xkj27jtT/yearbook-photo-blue-textured-background-a-young-light-brown-men-focused-expression-wearing-a-crisp-2.png",
+    "https://i.ibb.co/Myx9Vr4T/yearbook-photo-blue-textured-background-a-young-light-brown-men-curly-hair-focused-expression-weari.png",
+    "https://i.ibb.co/1fn6sxdc/yearbook-photo-blue-textured-background-a-young-blackmen-with-glasses-focused-expression-wearing-a-x.png",
+    "https://i.ibb.co/JR2nSrZd/yearbook-photo-blue-textured-background-a-young-blackmen-with-glasses-focused-expression-wearing-a-f.png",
+    "httpsS://i.ibb.co/sdf5t1rZ/yearbook-photo-blue-textured-background-a-young-men-focused-expression-wearing-a-crisp-white-collar.png",
+    "https://i.ibb.co/MxH0hStP/yearbook-photo-blue-textured-background-a-young-men-focused-expression-wearing-a-crisp-white-collar.png",
+    "https://i.ibb.co/yc24xRZT/yearbook-photo-blue-textured-background-a-young-men-focused-expression-wearing-a-crisp-white-collar.png",
+    "httpss://i.ibb.co/rPGc9KY/yearbook-photo-blue-textured-background-a-young-men-focused-expression-wearing-a-crisp-white-collar.png",
+    "https://i.ibb.co/N42TNzh/yearbook-photo-blue-textured-background-a-young-men-focused-expression-wearing-a-crisp-white-collar.png",
+    "https://i.ibb.co/sp20GGPZ/yearbook-photo-blue-textured-background-a-young-men-focused-expression-wearing-a-crisp-white- collar.png",
+    "https://i.ibb.co/21nmR4V1/yearbook-photo-blue-textured-background-a-young-men-focused-expression-wearing-a-crisp-white-collar.png",
+    "https://i.ibb.co/TxJ8wvxR/yearbook-photo-blue-textured-background-a-young-men-focused-expression-wearing-a-crisp-white-collar.png",
+    "https://i.ibb.co/FtS864k/yearbook-photo-blue-textured-background-a-young-men-focused-expression-wearing-a-crisp-white-collar.png",
+    "https://i.ibb.co/W4Ph8fbW/yearbook-photo-blue-textured-background-a-young-men-focused-expression-wearing-a-crisp-white-collar.png",
+    "https://i.ibb.co/tw4gsYg2/yearbook-photo-blue-textured-background-a-young-men-focused-expression-wearing-a-crisp-white-collar.png",
+    "https://i.ibb.co/qFFkYkgD/yearbook-photo-blue-textured-background-a-young-men-focused-expression-wearing-a-crisp-white-collar.png",
+    "https://i.ibb.co/n8RNJ9vC/yearbook-photo-blue-textured-background-a-young-men-focused-expression-wearing-a-crisp-white-collar.png",
+    "https://i.ibb.co/r2CSnfRy/yearbook-photo-blue-textured-background-a-young-men-focused-expression-wearing-a-crisp-white-collar.png",
+  ];
+  // --- FIM DAS URLS ---
+
+  let indexF = 0; // Índice para percorrer as urlsFemininas
+  let indexM = 0; // Índice para percorrer as urlsMasculinas
+
+  const dadosFotos = alunosCriados.map((aluno) => {
+    let urlFoto;
+
+    if (aluno.matricula.startsWith("2025F")) {
+      urlFoto =
+        urlsFemininas[indexF] || `URL_FEMININA_PLACEHOLDER_FALTANDO_${indexF}`;
+      indexF++;
+    } else if (aluno.matricula.startsWith("2025M")) {
+      urlFoto =
+        urlsMasculinas[indexM] || `URL_MASCULINA_PLACEHOLDER_FALTANDO_${indexM}`;
+      indexM++;
+    } else {
+      urlFoto = `URL_PADRAO_NAO_IDENTIFICADO_${aluno.matricula}`;
+    }
+
+    return {
+      url: urlFoto,
+      descricao: `Foto oficial de ${aluno.nome} para o anuário.`,
+      alunoId: aluno.id,
+    };
+  });
+
+  console.log(`-> Fotos 'F' preparadas: ${indexF} (Esperado: 55)`);
+  console.log(`-> Fotos 'M' preparadas: ${indexM} (Esperado: 46)`);
+
+  // --- 101 MENSAGENS ESTÁTICAS PERSONALIZADAS ---
+  const dadosMensagensEstaticas = [
+    // Bloco 1 (20)
+    "Olá! Se você chegou até aqui, é porque a curiosidade venceu. Aproveite cada segundo. O tempo aqui voa!",
+    "Ei! Que bom te ver por aqui. Lembre-se: não deixe que o medo te impeça de tentar.",
+    "Que a sua próxima aventura seja tão incrível quanto as que vivemos aqui. Seja a mudança que você quer ver no mundo.",
+    "Lembre-se de todas as memórias que criamos. Acredite mais em você do que nos seus críticos.",
+    "O futuro é uma tela em branco. O conhecimento é a única coisa que ninguém pode tirar de você.",
+    "Os corredores desta escola guardam nossas risadas. Leve o melhor daqui com você. Aproveite cada segundo!",
+    "Foi uma honra compartilhar este tempo com você. Que seus estudos abram portas incríveis. Não deixe o medo parar você.",
+    "Guarde os bons momentos e aprenda com os desafios. Estamos todos juntos nesta jornada. Seja a mudança!",
+    "Acredite nos seus sonhos. O esforço de hoje é o sucesso de amanhã. Confie na sua capacidade.",
+    "Isso não é um adeus, é um 'até logo'. O conhecimento que você adquiriu é seu para sempre.",
+    "Cada livro lido, cada desafio superado... tudo valeu a pena. O tempo aqui voa, aproveite!",
+    "Que as amizades feitas aqui durem para sempre. Sucesso na sua caminhada e não tenha medo de tentar.",
+    "O que aprendemos aqui é só o começo. O mundo é gigante! Vá e faça a diferença.",
+    "Para o leitor do futuro: espero que você esteja realizando seus sonhos. Acredite em você!",
+    "Aproveite a jornada, não apenas o destino. Cada momento de estudo é uma vitória. O conhecimento é o seu maior poder.",
+    "Que bom que nos encontramos. Cada dia é uma nova chance de aprender. Aproveite cada segundo!",
+    "Lembre-se de ser gentil, consigo e com os outros. O medo é só um obstáculo, pule por cima dele.",
+    "O mundo precisa de ideias novas. As suas. Seja a mudança que você quer ver.",
+    "Não duvide do seu potencial. Mesmo nos dias difíceis, continue. Acredite mais em você.",
+    "Boas lembranças, grandes lições. Isso é o que levamos. O conhecimento é a sua bagagem para a vida.",
+    // Bloco 2 (40)
+    "Olá! Se você chegou até aqui, é porque a curiosidade venceu. Aproveite cada segundo. O tempo aqui voa!",
+    "Ei! Que bom te ver por aqui. Lembre-se: não deixe que o medo te impeça de tentar.",
+    "Que a sua próxima aventura seja tão incrível quanto as que vivemos aqui. Seja a mudança que você quer ver no mundo.",
+    "Lembre-se de todas as memórias que criamos. Acredite mais em você do que nos seus críticos.",
+    "O futuro é uma tela em branco. O conhecimento é a única coisa que ninguém pode tirar de você.",
+    "Os corredores desta escola guardam nossas risadas. Leve o melhor daqui com você. Aproveite cada segundo!",
+    "Foi uma honra compartilhar este tempo com você. Que seus estudos abram portas incríveis. Não deixe o medo parar você.",
+    "Guarde os bons momentos e aprenda com os desafios. Estamos todos juntos nesta jornada. Seja a mudança!",
+    "Acredite nos seus sonhos. O esforço de hoje é o sucesso de amanhã. Confie na sua capacidade.",
+    "Isso não é um adeus, é um 'até logo'. O conhecimento que você adquiriu é seu para sempre.",
+    "Cada livro lido, cada desafio superado... tudo valeu a pena. O tempo aqui voa, aproveite!",
+    "Que as amizades feitas aqui durem para sempre. Sucesso na sua caminhada e não tenha medo de tentar.",
+    "O que aprendemos aqui é só o começo. O mundo é gigante! Vá e faça a diferença.",
+    "Para o leitor do futuro: espero que você esteja realizando seus sonhos. Acredite em você!",
+    "Aproveite a jornada, não apenas o destino. Cada momento de estudo é uma vitória. O conhecimento é o seu maior poder.",
+    "Que bom que nos encontramos. Cada dia é uma nova chance de aprender. Aproveite cada segundo!",
+    "Lembre-se de ser gentil, consigo e com os outros. O medo é só um obstáculo, pule por cima dele.",
+    "O mundo precisa de ideias novas. As suas. Seja a mudança que você quer ver.",
+    "Não duvide do seu potencial. Mesmo nos dias difíceis, continue. Acredite mais em você.",
+    "Boas lembranças, grandes lições. Isso é o que levamos. O conhecimento é a sua bagagem para a vida.",
+    // Bloco 3 (60)
+    "Olá! Se você chegou até aqui, é porque a curiosidade venceu. Aproveite cada segundo. O tempo aqui voa!",
+    "Ei! Que bom te ver por aqui. Lembre-se: não deixe que o medo te impeça de tentar.",
+    "Que a sua próxima aventura seja tão incrível quanto as que vivemos aqui. Seja a mudança que você quer ver no mundo.",
+    "Lembre-se de todas as memórias que criamos. Acredite mais em você do que nos seus críticos.",
+    "O futuro é uma tela em branco. O conhecimento é a única coisa que ninguém pode tirar de você.",
+    "Os corredores desta escola guardam nossas risadas. Leve o melhor daqui com você. Aproveite cada segundo!",
+    "Foi uma honra compartilhar este tempo com você. Que seus estudos abram portas incríveis. Não deixe o medo parar você.",
+    "Guarde os bons momentos e aprenda com os desafios. Estamos todos juntos nesta jornada. Seja a mudança!",
+    "Acredite nos seus sonhos. O esforço de hoje é o sucesso de amanhã. Confie na sua capacidade.",
+    "Isso não é um adeus, é um 'até logo'. O conhecimento que você adquiriu é seu para sempre.",
+    "Cada livro lido, cada desafio superado... tudo valeu a pena. O tempo aqui voa, aproveite!",
+    "Que as amizades feitas aqui durem para sempre. Sucesso na sua caminhada e não tenha medo de tentar.",
+    "O que aprendemos aqui é só o começo. O mundo é gigante! Vá e faça a diferença.",
+    "Para o leitor do futuro: espero que você esteja realizando seus sonhos. Acredite em você!",
+    "Aproveite a jornada, não apenas o destino. Cada momento de estudo é uma vitória. O conhecimento é o seu maior poder.",
+    "Que bom que nos encontramos. Cada dia é uma nova chance de aprender. Aproveite cada segundo!",
+    "Lembre-se de ser gentil, consigo e com os outros. O medo é só um obstáculo, pule por cima dele.",
+    "O mundo precisa de ideias novas. As suas. Seja a mudança que você quer ver.",
+    "Não duvide do seu potencial. Mesmo nos dias difíceis, continue. Acredite mais em você.",
+    "Boas lembranças, grandes lições. Isso é o que levamos. O conhecimento é a sua bagagem para a vida.",
+    // Bloco 4 (80)
+    "Olá! Se você chegou até aqui, é porque a curiosidade venceu. Aproveite cada segundo. O tempo aqui voa!",
+    "Ei! Que bom te ver por aqui. Lembre-se: não deixe que o medo te impeça de tentar.",
+    "Que a sua próxima aventura seja tão incrível quanto as que vivemos aqui. Seja a mudança que você quer ver no mundo.",
+    "Lembre-se de todas as memórias que criamos. Acredite mais em você do que nos seus críticos.",
+    "O futuro é uma tela em branco. O conhecimento é a única coisa que ninguém pode tirar de você.",
+    "Os corredores desta escola guardam nossas risadas. Leve o melhor daqui com você. Aproveite cada segundo!",
+    "Foi uma honra compartilhar este tempo com você. Que seus estudos abram portas incríveis. Não deixe o medo parar você.",
+    "Guarde os bons momentos e aprenda com os desafios. Estamos todos juntos nesta jornada. Seja a mudança!",
+    "Acredite nos seus sonhos. O esforço de hoje é o sucesso de amanhã. Confie na sua capacidade.",
+    "Isso não é um adeus, é um 'até logo'. O conhecimento que você adquiriu é seu para sempre.",
+    "Cada livro lido, cada desafio superado... tudo valeu a pena. O tempo aqui voa, aproveite!",
+    "Que as amizades feitas aqui durem para sempre. Sucesso na sua caminhada e não tenha medo de tentar.",
+    "O que aprendemos aqui é só o começo. O mundo é gigante! Vá e faça a diferença.",
+    "Para o leitor do futuro: espero que você esteja realizando seus sonhos. Acredite em você!",
+    "Aproveite a jornada, não apenas o destino. Cada momento de estudo é uma vitória. O conhecimento é o seu maior poder.",
+    "Que bom que nos encontramos. Cada dia é uma nova chance de aprender. Aproveite cada segundo!",
+    "Lembre-se de ser gentil, consigo e com os outros. O medo é só um obstáculo, pule por cima dele.",
+    "O mundo precisa de ideias novas. As suas. Seja a mudança que você quer ver.",
+    "Não duvide do seu potencial. Mesmo nos dias difíceis, continue. Acredite mais em você.",
+    "Boas lembranças, grandes lições. Isso é o que levamos. O conhecimento é a sua bagagem para a vida.",
+    // Bloco 5 (100)
+    "Olá! Se você chegou até aqui, é porque a curiosidade venceu. Aproveite cada segundo. O tempo aqui voa!",
+    "Ei! Que bom te ver por aqui. Lembre-se: não deixe que o medo te impeça de tentar.",
+    "Que a sua próxima aventura seja tão incrível quanto as que vivemos aqui. Seja a mudança que você quer ver no mundo.",
+    "Lembre-se de todas as memórias que criamos. Acredite mais em você do que nos seus críticos.",
+    "O futuro é uma tela em branco. O conhecimento é a única coisa que ninguém pode tirar de você.",
+    "Os corredores desta escola guardam nossas risadas. Leve o melhor daqui com você. Aproveite cada segundo!",
+    "Foi uma honra compartilhar este tempo com você. Que seus estudos abram portas incríveis. Não deixe o medo parar você.",
+    "Guarde os bons momentos e aprenda com os desafios. Estamos todos juntos nesta jornada. Seja a mudança!",
+    "Acredite nos seus sonhos. O esforço de hoje é o sucesso de amanhã. Confie na sua capacidade.",
+    "Isso não é um adeus, é um 'até logo'. O conhecimento que você adquiriu é seu para sempre.",
+    "Cada livro lido, cada desafio superado... tudo valeu a pena. O tempo aqui voa, aproveite!",
+    "Que as amizades feitas aqui durem para sempre. Sucesso na sua caminhada e não tenha medo de tentar.",
+    "O que aprendemos aqui é só o começo. O mundo é gigante! Vá e faça a diferença.",
+    "Para o leitor do futuro: espero que você esteja realizando seus sonhos. Acredite em você!",
+    "Aproveite a jornada, não apenas o destino. Cada momento de estudo é uma vitória. O conhecimento é o seu maior poder.",
+    "Que bom que nos encontramos. Cada dia é uma nova chance de aprender. Aproveite cada segundo!",
+    "Lembre-se de ser gentil, consigo e com os outros. O medo é só um obstáculo, pule por cima dele.",
+    "O mundo precisa de ideias novas. As suas. Seja a mudança que você quer ver.",
+    "Não duvide do seu potencial. Mesmo nos dias difíceis, continue. Acredite mais em você.",
+    "Boas lembranças, grandes lições. Isso é o que levamos. O conhecimento é a sua bagagem para a vida.",
+    // Mensagem 101
+    "Olá! Se você chegou até aqui, é porque a curiosidade venceu. Aproveite cada segundo. O tempo aqui voa!",
+  ];
+  // --- FIM DAS MENSAGENS ---
+
+// 5. PREPARAR DADOS DE MENSAGENS (101 Registros - Mensagem para o leitor do perfil)
+  const dadosMensagens = alunosCriados.map((aluno, index) => ({
+    // Pega a mensagem estática baseada no índice do aluno
+    conteudo: 
+      dadosMensagensEstaticas[index] ||
+      `MENSAGEM_PLACEHOLDER_FALTANDO_${index}`,
     alunoId: aluno.id, // CHAVE ESTRANGEIRA: O Aluno que está "deixando" a mensagem
   }));
 
@@ -801,7 +1000,7 @@ async function main() {
     skipDuplicates: true,
   });
   console.log(
-    `-> SEED FOTOS concluído: ${resultFotos.count} fotos criadas com placeholder!`
+    `-> SEED FOTOS concluído: ${resultFotos.count} fotos criadas!`
   );
 
   // 7. SEED DE MENSAGENS (101 Mensagens)
@@ -814,7 +1013,7 @@ async function main() {
   );
 
   console.log(
-    "Seeding CONCLUÍDO! O banco está populado com 101 alunos, fotos (placeholder) e mensagens."
+    "Seeding CONCLUÍDO! O banco está populado com 101 alunos, fotos e mensagens."
   );
 }
 
