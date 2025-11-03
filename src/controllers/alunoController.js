@@ -1,4 +1,8 @@
 import * as alunoModel from './../models/alunoModel.js'
+import { PrismaClient } from "@prisma/client";
+
+const prisma = new PrismaClient();
+
 
 export const listarTodos = async (req, res) => {
     try {
@@ -177,20 +181,16 @@ export const apagarAluno = async (req, res) => {
     }
 }
 
-// Assumo que alunoModel está importado
-// import * as alunoModel from '../models/aluno.model.js';
-
 export const atualizarAluno = async (req, res) => {
     try {
         const id = parseInt(req.params.id);
         const dados = req.body;
 
-        // 1. VERIFICAÇÃO "PELO MENOS UM DADO" (sem Object.keys)
-        //    Vamos usar um loop 'for...in' para checar se o objeto 'dados' tem chaves
+        // usando laço de repetição 'for' para checar se o objeto 'dados' tem chaves
         let temDados = false;
         for (const chave in dados) {
             temDados = true; // Encontrou pelo menos uma chave
-            break;           // Pode parar o loop
+            break; // Pode parar o loop
         }
 
         if (!temDados) {
@@ -202,8 +202,10 @@ export const atualizarAluno = async (req, res) => {
         // 2. Extrai a matrícula (ou undefined se não existir)
         const { matricula } = dados;
 
-        // 3. Verifica se o aluno existe
-        const alunoExiste = await alunoModel.findbyid(id);
+        // verificando se o aluno existe
+        const alunoExiste = await prisma.aluno.findUnique({
+            where: { id: id }
+        });
 
         if (!alunoExiste) {
             return res.status(404).json({
@@ -212,17 +214,19 @@ export const atualizarAluno = async (req, res) => {
             })
         }
 
-        // 4. VERIFICAÇÃO CONDICIONAL DA MATRÍCULA
-        //    (Só roda se 'matricula' foi enviada no body)
-        if (matricula !== undefined) {
+        //VERIFICAÇÃO CONDICIONAL DA MATRÍCULA
+        // (Só roda se 'matricula' foi enviada no body)
 
+        if (matricula) {
+
+        
             // Verifica o tamanho total
             if (matricula.length !== 8) {
                 return res.status(400).json({
                     error: "Formato de matrícula inválido. Deve ter exatamente 8 caracteres. Ex: 2025M001"
                 });
             }
-            // ... (resto da sua validação de matrícula) ...
+            
             // Verifica o prefixo (Ano '2025')
             const prefixoAnoValido = matricula[0] === '2' &&
                 matricula[1] === '0' &&
@@ -254,10 +258,37 @@ export const atualizarAluno = async (req, res) => {
                     error: "Matrícula inválida. Os 3 últimos caracteres devem ser numéricos."
                 });
             }
+        
+            // findUnique para ver se alguém JÁ TEM essa matrícula
+            const alunoComEssaMatricula = await prisma.aluno.findUnique({
+                where: {
+                    matricula: matricula // Procurando pelo campo 'matricula'
+                }
+            });
+
+            // vendo o resultado
+            // Se encontramos alguém E esse alguém NÃO É o aluno que estamos editando
+            if (alunoComEssaMatricula && alunoComEssaMatricula.id !== id) {
+                // Se 'alunoComEssaMatricula' não for 'null'
+                // E o 'id' dele for DIFERENTE do 'id' da nossa URL...
+                // ... significa que OUTRO aluno já tem essa matrícula.
+                
+                // Retorna um erro 409 (Conflict)
+                return res.status(409).json({
+                    erro: 'Conflito: A matrícula informada já está em uso por outro aluno.'
+                });
+            }
+           
         }
 
-        // 5. Chama o Model
-        const alunoAtualizado = await alunoModel.update(id, dados);
+
+
+        const alunoAtualizado = await prisma.aluno.update({
+            where: {
+                id: id // procure o id do params
+            },
+            data: dados // atualiza com os dados do req.body
+        });
 
         res.status(200).json({
             mensagem: 'aluno atualizado com sucesso',
@@ -265,16 +296,14 @@ export const atualizarAluno = async (req, res) => {
         })
 
     } catch (error) {
-        // ... (seu 'catch' continua aqui) ...
-        if (error.code === 'P2002') {
-            return res.status(409).json({
-                erro: `Erro: O(s) campo(s) ${error.meta.target.join(', ')} já está(ão) em uso.`
-            });
-        }
+    
+        console.error("ERRO DETECTADO NO CATCH:", error); 
+
         res.status(500).json({
             erro: 'Erro ao atualizar aluno',
             detalhes: error.message
         })
     }
 }
+
 

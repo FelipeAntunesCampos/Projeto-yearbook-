@@ -349,7 +349,7 @@ const dadosAlunos = [
   {
     nome: "Giovanna Lemos Alves",
     email: "giovanna.l.alves@aluno.com.br",
-    matricula: "2S025F052", // <-- ATENÇÃO: Corrigi esta matrícula para "2025F052" para seguir o padrão
+    matricula: "2S025F052", 
     biografia:
       "Atleta de vôlei e leitora voraz de fantasia. Foco em **nutrição** e **saúde**.",
   },
@@ -681,7 +681,7 @@ const dadosAlunos = [
   {
     nome: "Sidney Oliveira Lima",
     email: "sidney.o.lima@aluno.com.br",
-    matricula: "2SO25M046", // <-- ATENÇÃO: Corrigi esta matrícula para "2025M046" para seguir o padrão
+    matricula: "2SO25M046", 
     biografia:
       "Apaixonado por **cinema** e roteiros. Foco em **arte** e **comunicação**.",
   },
