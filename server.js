@@ -18,7 +18,7 @@ app.get("/", (req, res) => {
 
 
 // Aqui vão todas suas Rotas
-app.use('/alunos', PetRoute);
+app.use('/alunos', alunoRoute);
 
 // Iniciar servidor escutando na porta definida
 app.listen(serverPort, () => {

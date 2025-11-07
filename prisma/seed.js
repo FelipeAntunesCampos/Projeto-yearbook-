@@ -349,7 +349,7 @@ const dadosAlunos = [
   {
     nome: "Giovanna Lemos Alves",
     email: "giovanna.l.alves@aluno.com.br",
-    matricula: "2S025F052", // <-- ATENÇÃO: Corrigi esta matrícula para "2025F052" para seguir o padrão
+    matricula: "2S025F052", 
     biografia:
       "Atleta de vôlei e leitora voraz de fantasia. Foco em **nutrição** e **saúde**.",
   },
@@ -681,7 +681,7 @@ const dadosAlunos = [
   {
     nome: "Sidney Oliveira Lima",
     email: "sidney.o.lima@aluno.com.br",
-    matricula: "2SO25M046", // <-- ATENÇÃO: Corrigi esta matrícula para "2025M046" para seguir o padrão
+    matricula: "2SO25M046", 
     biografia:
       "Apaixonado por **cinema** e roteiros. Foco em **arte** e **comunicação**.",
   },
@@ -694,7 +694,7 @@ const dadosAlunos = [
   },
 ];
 
-
+const dadosFuncionarios = []
 
 
 // FUNÇÃO PRINCIPAL DO SEEDING
@@ -734,7 +734,7 @@ async function main() {
 
   // 4. PREPARAR DADOS DE FOTOS (101 Registros com URL)
 
-  // --- 55 URLS FEMININAS ---
+  // URLS FEMININAS
   const urlsFemininas = [
     "https://i.ibb.co/5h3BnT92/mulher.png",
     "https://i.ibb.co/XZW0wZjK/mulher.png",
@@ -796,7 +796,7 @@ async function main() {
     "https://i.ibb.co/hxYW6S7t/mulher.png",
   ];
 
-  // --- 46 URLS MASCULINAS ---
+  // URLS MASCULINAS
   const urlsMasculinas = [
     "https://i.ibb.co/jkSvQZ1s/yearbook-photo-blue-textured-background-a-young-white-skin-men-with-beard-straight-hair-focused-exp.png",
     "https://i.ibb.co/70gPZ4Y/yearbook-photo-blue-textured-background-a-young-men-shaved-hair-almost-bald-focused-expression-wear.png",
@@ -843,7 +843,12 @@ async function main() {
     "https://i.ibb.co/n8RNJ9vC/yearbook-photo-blue-textured-background-a-young-men-focused-expression-wearing-a-crisp-white-collar.png",
     "https://i.ibb.co/r2CSnfRy/yearbook-photo-blue-textured-background-a-young-men-focused-expression-wearing-a-crisp-white-collar.png",
   ];
-  // --- FIM DAS URLS ---
+
+  const urlsFuncionariosF = [];
+
+
+  const urlsFuncionariosM = [];
+  // FIM DAS URLS
 
   let indexF = 0; // Índice para percorrer as urlsFemininas
   let indexM = 0; // Índice para percorrer as urlsMasculinas
@@ -865,7 +870,7 @@ async function main() {
 
     return {
       url: urlFoto,
-      descricao: `Foto oficial de ${aluno.nome} para o anuário.`,
+      descricao: `Foto oficial de ${aluno.nome} para o yearbook.`,
       alunoId: aluno.id,
     };
   });
@@ -873,7 +878,7 @@ async function main() {
   console.log(`-> Fotos 'F' preparadas: ${indexF} (Esperado: 55)`);
   console.log(`-> Fotos 'M' preparadas: ${indexM} (Esperado: 46)`);
 
-  // --- 101 MENSAGENS ESTÁTICAS PERSONALIZADAS ---
+  //  101 MENSAGENS ESTÁTICAS PERSONALIZADAS 
   const dadosMensagensEstaticas = [
     // Bloco 1 (20)
     "Olá! Se você chegou até aqui, é porque a curiosidade venceu. Aproveite cada segundo. O tempo aqui voa!",
@@ -983,7 +988,7 @@ async function main() {
     // Mensagem 101
     "Olá! Se você chegou até aqui, é porque a curiosidade venceu. Aproveite cada segundo. O tempo aqui voa!",
   ];
-  // --- FIM DAS MENSAGENS ---
+  // FIM DAS MENSAGENS
 
 // 5. PREPARAR DADOS DE MENSAGENS (101 Registros - Mensagem para o leitor do perfil)
   const dadosMensagens = alunosCriados.map((aluno, index) => ({
