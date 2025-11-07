@@ -68,3 +68,40 @@ model Foto {
 
   @@map("fotos")
 }
+
+// Tabela: Funcionarios
+
+model Funcionarios {
+  id     Int     @id @default(autoincrement())
+  nome   String
+  email  String  @unique
+  cargo  String?
+  genero String
+
+  // Campo sugerido para o texto do anuário
+  biografia String? @db.Text
+
+  fotos FotoFuncionario[]
+
+  criadoEm     DateTime @default(now())
+  atualizadoEm DateTime @updatedAt
+
+  @@map("funcionarios")
+}
+
+model FotoFuncionario {
+  id        Int     @id @default(autoincrement())
+  url       String  @db.Text
+  descricao String?
+
+  // Campo sugerido: Se a foto é a principal do perfil
+  isPerfil Boolean @default(false)
+
+  // Chave estrangeira
+  funcionarioId Int
+  funcionario   Funcionarios @relation(fields: [funcionarioId], references: [id])
+
+  criadoEm DateTime @default(now())
+
+  @@map("fotosFuncionarios")
+}
