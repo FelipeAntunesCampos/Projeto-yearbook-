@@ -11,18 +11,23 @@
   },
   "keywords": [
     "MVC",
-    "Back-endd"
+    "Back-enddd"
   ],
   "author": "Felipe Campos, Gustavo Alves, Matheus Leitão, Leticia, Luana Guerreiro, Duetes",
   "license": "MIT",
   "bugs": {},
   "dependencies": {
-    "@prisma/client": "^6.18.0",
+    "@prisma/client": "^6.19.0",
     "dotenv": "^17.2.2",
     "express": "^5.1.0",
     "nodemon": "^3.1.10",
+<<<<<<< HEAD
     "prisma": "^6.18.0"
    },
+=======
+    "prisma": "^6.19.0"
+  },
+>>>>>>> ed96831d8014d514f4fb3130849f24efe222a062
   "prisma": {
     "seed": "node prisma/seed.js"
   }
