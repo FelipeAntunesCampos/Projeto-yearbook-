@@ -72,11 +72,11 @@ model Foto {
 // Tabela: Funcionarios
 
 model Funcionarios {
-  id     Int     @id @default(autoincrement())
-  nome   String
-  email  String  @unique
-  cargo  String?
-  genero String
+  id       Int     @id @default(autoincrement())
+  nome     String
+  email    String  @unique
+  cargo    String?
+  registro String  @unique
 
   // Campo sugerido para o texto do anuário
   biografia String? @db.Text

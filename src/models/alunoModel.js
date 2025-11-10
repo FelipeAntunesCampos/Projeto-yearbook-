@@ -58,6 +58,38 @@ export const createAluno = async (data) => {
     }
 };
 
+export const createFuncionario = async (data) => {
+  const { fotos, ...funcionarioData } = data;
+
+  try {
+    const novoFuncionario = await prisma.funcionario.create({
+      data: {
+        ...funcionarioData,
+        fotos: {
+          create: fotos,
+        },
+      },
+      include: {
+        fotos: true,
+      },
+    });
+
+    return novoFuncionario;
+    
+  } catch (error) {
+    console.error("Erro no model ao criar funcionário:", error);
+
+    if (error.code === 'P2002') {
+      const campos = error.meta.target;
+      throw new Error(
+        `Erro: O(s) campo(s) ${campos.join(', ')} já está(ão) em uso.`
+      );
+    }
+
+    throw new Error(`Erro ao salvar no banco de dados: ${error.message}`);
+  }
+};
+
 
 export const deleteAluno = async (id) => {
     const idNumerico = Number(id);

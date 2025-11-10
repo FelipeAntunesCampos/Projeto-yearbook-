@@ -1,10 +1,13 @@
 // Importar pacotes/bibliotecas
 import express from "express";
 import dotenv from "dotenv";
+import cors from "cors"; 
 import alunoRoute from './src/routes/alunoRoute.js'
 
 // Criar aplicação com Express e configurar para aceitar JSON
 const app = express();
+app.use(cors());
+
 app.use(express.json());
 
 // Carregar variáveis de ambiente e definir constante para porta do servidor

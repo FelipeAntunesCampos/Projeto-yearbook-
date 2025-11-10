@@ -154,6 +154,90 @@
         }
     };
 
+    export const criarFuncionario = async (req, res) => {
+    try {
+        const {
+            nome,
+            email,
+            cargo,
+            registro,
+            biografia,
+            fotos
+        } = req.body;
+
+        if (!nome || !email || !registro) {
+            return res.status(400).json({
+                error: "Nome, email e registro são obrigatórios."
+            });
+        }
+
+        if (registro.length !== 8) {
+            return res.status(400).json({
+                error: "Formato de registro inválido. Deve ter exatamente 8 caracteres. Ex: 2025FABC"
+            });
+        }
+
+        const prefixoAnoValido = registro[0] === '2' &&
+            registro[1] === '0' &&
+            registro[2] === '2' &&
+            registro[3] === '5';
+
+        if (!prefixoAnoValido) {
+            return res.status(400).json({
+                error: "Registro inválido. Deve começar com o ano '2025'."
+            });
+        }
+
+        const prefixoGeneroValido = registro[4] === 'M' || registro[4] === 'F';
+
+        if (!prefixoGeneroValido) {
+            return res.status(400).json({
+                error: "Registro inválido. O 5º caractere deve ser 'M' ou 'F'."
+            });
+        }
+        
+        // isNaN('A') -> true (é letra/não-número)
+        // isNaN('1') -> false (é número)
+        const sequencialValido = isNaN(registro[5]) &&
+            isNaN(registro[6]) &&
+            isNaN(registro[7]);
+
+        if (!sequencialValido) {
+            return res.status(400).json({
+                error: "Registro inválido. Os 3 últimos caracteres devem ser letras."
+            });
+        }
+
+        const fotosParaPrisma = (fotos || []).map(url => ({
+            url: url
+        }));
+
+        const dadosParaSalvar = {
+            nome,
+            email,
+            cargo,
+            registro,
+            biografia,
+            fotos: fotosParaPrisma,
+        };
+
+        console.log("Dados que estou tentando salvar:", dadosParaSalvar);
+        // Assumindo que o model de funcionário está importado (ex: funcionarioModel)
+        const novoFuncionario = await funcionarioModel.createFuncionario(dadosParaSalvar);
+
+        return res.status(201).json(novoFuncionario);
+
+    } catch (error) {
+        console.error("Erro no controller criarFuncionario:", error.message);
+
+        if (error.message.includes("já está(ão) em uso")) {
+            return res.status(409).json({ error: error.message });
+        }
+
+        return res.status(500).json({ error: "Erro interno ao criar funcionário." });
+    }
+};
+
     export const apagarAluno = async (req, res) => {
         try {
             const id = parseInt(req.params.id);
