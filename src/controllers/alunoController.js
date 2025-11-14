@@ -6,7 +6,12 @@ const prisma = new PrismaClient();
 export const listarTodos = async (req, res) => {
   try {
     // 'alunos' precisa ser mutável porque podemos filtrar/reatribuir
-    let alunos = await alunoModel.findAll();
+    let alunos = await alunoModel.findAll({
+      include: {
+            fotos: true,      // Isto vai incluir o array de fotos
+            mensagens: true   // Isto vai incluir o array de mensagens
+        }
+    });
     const { matricula } = req.query;
     let criterioFiltro = null;
     // Filtro de Matrícula para saber se é Feminino(F) ou Masculino(M)
@@ -207,7 +212,7 @@ export const atualizarAluno = async (req, res) => {
     let temDados = false;
     for (const chave in dados) {
       temDados = true; // Encontrou pelo menos uma chave
-      break; // Pode parar o loop
+      break; 
     }
 
     if (!temDados) {
@@ -232,7 +237,7 @@ export const atualizarAluno = async (req, res) => {
     }
 
     //VERIFICAÇÃO CONDICIONAL DA MATRÍCULA
-    // (Só roda se 'matricula' foi enviada no body)
+    
 
     if (matricula) {
       // Verifica o tamanho total
@@ -276,21 +281,19 @@ export const atualizarAluno = async (req, res) => {
         });
       }
 
-      // findUnique para ver se alguém JÁ TEM essa matrícula
+  
       const alunoComEssaMatricula = await prisma.aluno.findUnique({
         where: {
           matricula: matricula, // Procurando pelo campo 'matricula'
         },
       });
 
-      // vendo o resultado
-      // Se encontramos alguém E esse alguém NÃO É o aluno que estamos editando
+     
+      
       if (alunoComEssaMatricula && alunoComEssaMatricula.id !== id) {
-        // Se 'alunoComEssaMatricula' não for 'null'
-        // E o 'id' dele for DIFERENTE do 'id' da nossa URL...
-        // ... significa que OUTRO aluno já tem essa matrícula.
+        
 
-        // Retorna um erro 409 (Conflict)
+  
         return res.status(409).json({
           erro: "Conflito: A matrícula informada já está em uso por outro aluno.",
         });
@@ -299,9 +302,9 @@ export const atualizarAluno = async (req, res) => {
 
     const alunoAtualizado = await prisma.aluno.update({
       where: {
-        id: id, // procure o id do params
+        id: id, 
       },
-      data: dados, // atualiza com os dados do req.body
+      data: dados, 
     });
 
     res.status(200).json({

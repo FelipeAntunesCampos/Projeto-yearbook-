@@ -4,14 +4,22 @@ const prisma = new PrismaClient();
 //crio a variavel findAll e já exporto
 export const findAll = async () => {
     return await prisma.aluno.findMany({
-        orderBy: { nome: 'asc' }
+        orderBy: { nome: 'asc' },
+        include: {
+            fotos: true,      // Isto vai incluir o array de fotos
+            mensagens: true   // Isto vai incluir o array de mensagens
+        }
     });
 }
 
 //crio a variavel findbyid e já exporto
 export const findbyid = async (id) => {
     return await prisma.aluno.findUnique({
-        where: { id: Number(id)}
+        where: { id: Number(id)},
+        include: {
+            fotos: true,      // Isto vai incluir o array de fotos
+            mensagens: true   // Isto vai incluir o array de mensagens
+        }
     });
 }
 
@@ -63,17 +71,29 @@ export const deleteAluno = async (id) => {
     const idNumerico = Number(id);
 
     await prisma.foto.deleteMany({
-        where: { alunoId: idNumerico }
+        where: { alunoId: idNumerico },
+        include: {
+            fotos: true,      // Isto vai incluir o array de fotos
+            mensagens: true   // Isto vai incluir o array de mensagens
+        }
     });
 
     
     await prisma.mensagem.deleteMany({
-        where: { alunoId: idNumerico }
+        where: { alunoId: idNumerico },
+        include: {
+            fotos: true,      // Isto vai incluir o array de fotos
+            mensagens: true   // Isto vai incluir o array de mensagens
+        }
     });
 
 
     return await prisma.aluno.delete({
-        where: { id: idNumerico }
+        where: { id: idNumerico },
+        include: {
+            fotos: true,      // Isto vai incluir o array de fotos
+            mensagens: true   // Isto vai incluir o array de mensagens
+        }
     });
 };
 
