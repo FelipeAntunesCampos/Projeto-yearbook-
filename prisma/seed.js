@@ -349,7 +349,7 @@ const dadosAlunos = [
   {
     nome: "Giovanna Lemos Alves",
     email: "giovanna.l.alves@aluno.com.br",
-    matricula: "2S025F052", 
+    matricula: "2025F052", 
     biografia:
       "Atleta de vôlei e leitora voraz de fantasia. Foco em **nutrição** e **saúde**.",
   },
@@ -679,13 +679,6 @@ const dadosAlunos = [
       "Aventureiro urbano, sempre explorando a cidade. Foco em **arquitetura** e **história** local.",
   },
   {
-    nome: "Sidney Oliveira Lima",
-    email: "sidney.o.lima@aluno.com.br",
-    matricula: "2SO25M046", 
-    biografia:
-      "Apaixonado por **cinema** e roteiros. Foco em **arte** e **comunicação**.",
-  },
-  {
     nome: "Kelly Cristina Reis",
     email: "kelly.c.reis@aluno.com.br",
     matricula: "2025F099",
@@ -778,7 +771,7 @@ async function main() {
     await prisma.foto.deleteMany();
     await prisma.fotoFuncionario.deleteMany();
     await prisma.aluno.deleteMany();
-    await prisma.funcionarios.eleteMany();
+    await prisma.funcionarios.deleteMany();
     console.log(
       "Registros existentes de Mensagem, Foto (Alunos), Foto (Funcionários), Aluno e Funcionário deletados."
     );
@@ -947,7 +940,11 @@ async function main() {
 "https://i.ibb.co/35WVkgQF/mulher.png",
 "https://i.ibb.co/BHvqsRwM/mulher.png",
 "https://i.ibb.co/v6wyDVdJ/mulher.png",
-"https://i.ibb.co/xqdmjgDh/mulher.png"
+"https://i.ibb.co/xqdmjgDh/mulher.png",
+"https://i.ibb.co/Tx8xfLN5/mulher.png",
+"https://i.ibb.co/x8D2mxKY/mulher-2.png",
+"https://i.ibb.co/Tx8xfLN5/mulher.png",
+"https://i.ibb.co/x8D2mxKY/mulher-2.png"
   ];
 
   // URLS MASCULINAS (ALUNOS)
@@ -995,7 +992,9 @@ async function main() {
 "https://i.ibb.co/tw4gsYg2/yearbook-photo-blue-textured-background-a-young-men-focused-expression-wearing-a-crisp-white-collar.png",
 "https://i.ibb.co/qFFkYkgD/yearbook-photo-blue-textured-background-a-young-men-focused-expression-wearing-a-crisp-white-collar.png",
 "https://i.ibb.co/n8RNJ9vC/yearbook-photo-blue-textured-background-a-young-men-focused-expression-wearing-a-crisp-white-collar.png",
-"https://i.ibb.co/r2CSnfRy/yearbook-photo-blue-textured-background-a-young-men-focused-expression-wearing-a-crisp-white-collar.png"
+"https://i.ibb.co/r2CSnfRy/yearbook-photo-blue-textured-background-a-young-men-focused-expression-wearing-a-crisp-white-collar.png",
+"https://i.ibb.co/23XKQ4gb/yearbook.png",
+"https://i.ibb.co/TqtYpZdP/Gemini-Generated-Image-fdufxvfdufxvfduf.png"
   ];
 
   let indexF = 0;

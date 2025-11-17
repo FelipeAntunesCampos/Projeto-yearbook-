@@ -5,6 +5,9 @@ const prisma = new PrismaClient();
 export const findAll = async () => {
   return await prisma.funcionarios.findMany({
     orderBy: { nome: "asc" },
+    include: {
+      fotos: true,      // Isto vai incluir o array de fotos
+    }
   });
 };
 
@@ -12,6 +15,9 @@ export const findAll = async () => {
 export const findbyid = async (id) => {
   return await prisma.funcionarios.findUnique({
     where: { id: Number(id) },
+    include: {
+      fotos: true,      // Isto vai incluir o array de fotos
+    }
   });
 };
 
@@ -35,7 +41,7 @@ export const createfuncionarios = async (data) => {
       // 4. Inclui os dados recém-criados na resposta
       include: {
         fotos: true,
-    
+
       },
     });
 
@@ -61,7 +67,7 @@ export const deletefuncionarios = async (id) => {
   const idNumerico = Number(id);
 
   await prisma.fotoFuncionario.deleteMany({
-    where: { funcionarioId: idNumerico }, 
+    where: { funcionarioId: idNumerico },
   });
 
   return await prisma.funcionarios.delete({
@@ -70,15 +76,31 @@ export const deletefuncionarios = async (id) => {
 };
 
 export const updateFuncionarios = async (id, data) => {
+
+  // 1. Separa os dados da relação (fotos) dos dados simples (funcionariosData)
+  const { fotos, ...funcionariosData } = data;
+
+  // 2. Prepara a operação de atualização de fotos (se 'fotos' foi enviado)
+  const updateOperacoes = {};
+  if (fotos) {
+    updateOperacoes.fotos = {
+      deleteMany: {}, // Deleta todas as fotos antigas
+      create: fotos,  // Cria as novas fotos (espera um array)
+    };
+  }
+
+  // 3. Executa o update
   return await prisma.funcionarios.update({
     where: { id: Number(id) },
     data: {
-      ...(data.nome && { nome: data.nome }),
-      ...(data.email && { email: data.email }),
-      ...(data.cargo && { cargo: data.cargo }),
-      ...(data.registro && { registro: data.registro }),
-      ...(data.biografia && { biografia: data.biografia }),
-      ...(data.fotos && { fotos: data.fotos }),
+      // Atualiza os dados simples (nome, email, cargo...)
+      ...funcionariosData,
+
+      // Atualiza a relação 'fotos' (se houver)
+      ...updateOperacoes,
     },
+    include: {
+      fotos: true, // Retorna o funcionário com as fotos atualizadas
+    }
   });
 };
