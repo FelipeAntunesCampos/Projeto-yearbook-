@@ -1,61 +1,54 @@
-import { PrismaClient } from '@prisma/client';
+import { PrismaClient } from "@prisma/client";
 const prisma = new PrismaClient();
 
-//crio a variavel findAll e já exporto
+// Retorna todos os funcionários, incluindo suas fotos, ordenados por nome.
 export const findAll = async () => {
   return await prisma.funcionarios.findMany({
     orderBy: { nome: "asc" },
     include: {
-      fotos: true,      // Isto vai incluir o array de fotos
-    }
+      fotos: true,
+    },
   });
 };
 
-//crio a variavel findbyid e já exporto
+// Retorna um funcionário específico pelo ID, incluindo suas fotos.
 export const findbyid = async (id) => {
   return await prisma.funcionarios.findUnique({
     where: { id: Number(id) },
     include: {
-      fotos: true,      // Isto vai incluir o array de fotos
-    }
+      fotos: true,
+    },
   });
 };
 
 export const createfuncionarios = async (data) => {
-  // 1. Separa os dados de relação dos dados do funcionarios
+  // Separa os dados de relação (fotos) dos dados do funcionário.
   const { fotos, ...funcionariosData } = data;
 
   try {
-    // 2. Cria o funcionarios e os registros aninhados em uma única transação
+    // Cria o funcionário e as fotos relacionadas em uma única transação.
     const novofuncionarios = await prisma.funcionarios.create({
       data: {
-        //...funcionariosData contém { nome, email, matricula, biografia }
-        ...funcionariosData,
+        ...funcionariosData, // Criação aninhada das fotos.
 
-        // 3. Cria os registros relacionados
         fotos: {
-          create: fotos, // Espera um array: [{ url: '...' }, { url: '...' }]
+          create: fotos,
         },
-
-      },
-      // 4. Inclui os dados recém-criados na resposta
+      }, // Inclui as fotos na resposta.
       include: {
         fotos: true,
-
       },
     });
 
     return novofuncionarios;
   } catch (error) {
-    // 5. Tratamento de erro (ex: violação de @unique)
     console.error("Erro no model ao criar funcionarios:", error);
 
     if (error.code === "P2002") {
-      // "Unique constraint failed on the {constraint}"
-      // Pega os campos que falharam (ex: ['email', 'matricula'])
-      const campos = error.meta.target;
+      // Tratamento de erro para violação de restrição única (@unique).
+      // Mensagem genérica para o usuário, conforme solicitado.
       throw new Error(
-        `Erro: O(s) campo(s) ${campos.join(", ")} já esta(ão) em uso.`
+        `Erro: O registro que você tentou criar já existe (verifique campos como email ou matrícula).`
       );
     }
 
@@ -64,11 +57,11 @@ export const createfuncionarios = async (data) => {
 };
 
 export const deletefuncionarios = async (id) => {
-  const idNumerico = Number(id);
+  const idNumerico = Number(id); // Deleta primeiro as fotos relacionadas para evitar conflitos de Foreign Key.
 
   await prisma.fotoFuncionario.deleteMany({
     where: { funcionarioId: idNumerico },
-  });
+  }); // Deleta o funcionário.
 
   return await prisma.funcionarios.delete({
     where: { id: idNumerico },
@@ -76,31 +69,27 @@ export const deletefuncionarios = async (id) => {
 };
 
 export const updateFuncionarios = async (id, data) => {
+  // Separa os dados da relação (fotos) dos dados simples.
+  const { fotos, ...funcionariosData } = data; // Prepara a operação de atualização de fotos (se 'fotos' foi enviado).
 
-  // 1. Separa os dados da relação (fotos) dos dados simples (funcionariosData)
-  const { fotos, ...funcionariosData } = data;
-
-  // 2. Prepara a operação de atualização de fotos (se 'fotos' foi enviado)
   const updateOperacoes = {};
   if (fotos) {
     updateOperacoes.fotos = {
-      deleteMany: {}, // Deleta todas as fotos antigas
-      create: fotos,  // Cria as novas fotos (espera um array)
+      deleteMany: {}, // Deleta todas as fotos existentes.
+      create: fotos, // Cria as novas fotos.
     };
-  }
+  } // Executa o update.
 
-  // 3. Executa o update
   return await prisma.funcionarios.update({
     where: { id: Number(id) },
     data: {
-      // Atualiza os dados simples (nome, email, cargo...)
-      ...funcionariosData,
+      // Atualiza os dados básicos.
+      ...funcionariosData, // Inclui a operação de atualização de fotos, se definida.
 
-      // Atualiza a relação 'fotos' (se houver)
       ...updateOperacoes,
     },
     include: {
-      fotos: true, // Retorna o funcionário com as fotos atualizadas
-    }
+      fotos: true, // Retorna o funcionário com as fotos atualizadas.
+    },
   });
 };
