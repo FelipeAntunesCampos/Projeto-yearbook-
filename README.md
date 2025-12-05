@@ -44,9 +44,7 @@ Configure um arquivo `.env` com as variáveis mínimas necessárias, por exemplo
 
 - PORT: porta em que a API será executada (ex.: 3000)
 - DATABASE_URL: string de conexão do banco para o Prisma
-- JWT_SECRET: segredo para assinatura de tokens JWT
 - NODE_ENV: ambiente (development ou production)
-- (Opcional) CHAVES de serviços de upload (Cloudinary, S3) ou SMTP para envio de e-mails
 
 Banco de dados (Prisma)
 -----------------------
